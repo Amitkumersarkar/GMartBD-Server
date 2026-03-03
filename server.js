@@ -13,10 +13,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-
+// routes
 
 app.get("/", (req, res) => {
-    res.send("G-Mart server is running...");
+    res.send("G-Mart server is running...!!");
 });
 
 app.listen(port, () => {
