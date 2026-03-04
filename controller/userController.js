@@ -24,7 +24,7 @@ export const register = async (req, res) => {
                 message: "User already exists"
             });
 
-        // hash password before saving (never store plain password)
+        // hash password before saving and it's never store plain password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // create new user in database
@@ -42,17 +42,18 @@ export const register = async (req, res) => {
         );
 
         // store token in cookie
-        // httpOnly = frontend JS cannot access it
-        // secure = only works in production
-        // sameSite = helps prevent CSRF
         res.cookie("token", token, {
+            // httpOnly = frontend JS cannot access it
             httpOnly: true,
+            // secure = only works in production
             secure: process.env.NODE_ENV === "production",
+            // sameSite = helps prevent CSRF
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            // expire within 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        // send user data (without password)
+        // send user data without password
         return res.status(201).json({
             success: true,
             user: {
@@ -62,7 +63,6 @@ export const register = async (req, res) => {
         });
 
     } catch (error) {
-        // if something goes wrong
         console.log(error.message);
         return res.status(500).json({
             success: false,
