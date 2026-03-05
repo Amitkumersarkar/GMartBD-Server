@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import "dotenv/config";
 import userRouter from "./routes/userRoute.js";
+import sellerRouter from "./routes/sellerRoute.js";
 
 const app = express();
 const port = process.env.PORT || 3500;
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
     res.send("G-Mart server is running...!!");
 });
 app.use("/api/user", userRouter);
+app.use("/api/seller", sellerRouter);
 
 // start server after DB connects
 const startServer = async () => {
