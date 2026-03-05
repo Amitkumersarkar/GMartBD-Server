@@ -20,6 +20,11 @@ const authUser = async (req, res, next) => {
         }
         next();
     } catch (error) {
-
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 }
+
+export default authUser;
