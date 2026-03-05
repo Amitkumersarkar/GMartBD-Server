@@ -160,3 +160,13 @@ export const isAuth = async (req, res) => {
     }
 };
 
+// Logout User : /api/user/logout
+
+export const logout = async (req, res) => {
+    try {
+
+    } catch (error) {
+
+    }
+}
+
