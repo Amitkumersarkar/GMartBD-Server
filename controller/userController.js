@@ -15,8 +15,10 @@ export const register = async (req, res) => {
                 message: "Missing Details"
             });
 
+        const normalizedEmail = email.toLowerCase();
+
         // check if user already exists with this email
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email: normalizedEmail });
 
         if (existingUser)
             return res.status(409).json({
@@ -24,13 +26,13 @@ export const register = async (req, res) => {
                 message: "User already exists"
             });
 
-        // hash password before saving and it's never store plain password
+        // hash password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // create new user in database
         const user = await User.create({
             name,
-            email,
+            email: normalizedEmail,
             password: hashedPassword
         });
 
@@ -43,13 +45,9 @@ export const register = async (req, res) => {
 
         // store token in cookie
         res.cookie("token", token, {
-            // httpOnly = frontend JS cannot access it
             httpOnly: true,
-            // secure = only works in production
             secure: process.env.NODE_ENV === "production",
-            // sameSite = helps prevent CSRF
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-            // expire within 7 days
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -71,20 +69,35 @@ export const register = async (req, res) => {
     }
 }
 
+
 // Login User : /api/user/login
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        if (!email || !password)
-            return res.json({ success: false, message: 'Email and password are required' });
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.json({ success: false, message: 'Invalid Email or password' });
 
-        }
+        if (!email || !password)
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required"
+            });
+
+        const normalizedEmail = email.toLowerCase();
+
+        const user = await User.findOne({ email: normalizedEmail });
+
+        if (!user)
+            return res.status(401).json({
+                success: false,
+                message: "Invalid Email or password"
+            });
+
         const isMatch = await bcrypt.compare(password, user.password)
+
         if (!isMatch)
-            return res.json({ success: false, message: 'Invalid Email or password' });
+            return res.status(401).json({
+                success: false,
+                message: "Invalid Email or password"
+            });
 
 
         // create JWT token with user id
@@ -96,18 +109,14 @@ export const login = async (req, res) => {
 
         // store token in cookie
         res.cookie("token", token, {
-            // httpOnly = frontend JS cannot access it
             httpOnly: true,
-            // secure = only works in production
             secure: process.env.NODE_ENV === "production",
-            // sameSite = helps prevent CSRF
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-            // expire within 7 days
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         // send user data without password
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
             user: {
                 email: user.email,
@@ -117,6 +126,9 @@ export const login = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        res.json({ success: false, message: error.message });
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 }
