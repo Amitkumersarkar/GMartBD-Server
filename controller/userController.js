@@ -162,11 +162,27 @@ export const isAuth = async (req, res) => {
 
 // Logout User : /api/user/logout
 
-export const logout = async (req, res) => {
+export const logout = (req, res) => {
     try {
 
-    } catch (error) {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
+        });
 
+        return res.status(200).json({
+            success: true,
+            message: "User logged out successfully"
+        });
+
+    } catch (error) {
+        console.log(error.message);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
-}
+};
 
