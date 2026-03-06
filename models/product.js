@@ -7,9 +7,8 @@ const productSchema = new mongoose.Schema({
         trim: true
     },
     description: {
-        type: Array,
-        required: true,
-        trim: true
+        type: [String],
+        required: true
     },
     price: {
         type: Number,
@@ -20,22 +19,21 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: Array,
+        type: [String],
         required: true
     },
     category: {
-        type: Array,
+        type: [String],
         required: true
     },
-
     inStock: {
         type: Boolean,
         default: true
-    },
+    }
 }, {
     timestamps: true
 });
 
-const product = mongoose.models.product || mongoose.model("product", productSchema);
+const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
 
-export default product;
+export default Product;
