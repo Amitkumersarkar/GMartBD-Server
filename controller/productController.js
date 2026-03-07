@@ -27,12 +27,26 @@ export const addProduct = async (req, res) => {
 
 // Get Product : /api/product/list
 export const productList = async (req, res) => {
-
+    try {
+        const products = await Product.find({})
+        res.json({ success: true, products })
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: true, message: "Product Added" })
+    }
 }
 
 // Get single Product : /api/product/id
 export const productById = async (req, res) => {
+    try {
+        const { id } = req.body
+        const product = await Product.findById(id)
+        res.json({ success: true, products })
 
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: true, message: "Product Added" })
+    }
 }
 
 // Change Product inStock : /api/product/stock
