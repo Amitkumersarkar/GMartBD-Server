@@ -2,10 +2,11 @@ import express from "express";
 import { sellerLogin, sellerLogout, isSellerAuth } from "../controller/sellerController.js";
 import authSeller from "../middlewares/authSeller.js";
 
-const sellerRouter = express.Router();
+const router = express.Router();
 
-sellerRouter.post("/login", sellerLogin);
-sellerRouter.post("/logout", authSeller, sellerLogout);
-sellerRouter.get("/is-auth", authSeller, isSellerAuth);
+// Routes
+router.post("/login", sellerLogin);
+router.get("/logout", authSeller, sellerLogout); // must be GET to match frontend
+router.get("/is-auth", authSeller, isSellerAuth);
 
-export default sellerRouter;
+export default router;
