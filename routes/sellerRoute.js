@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Routes
 router.post("/login", sellerLogin);
-router.get("/logout", authSeller, sellerLogout); // must be GET to match frontend
+router.get("/logout", authSeller, sellerLogout);
 router.get("/is-auth", authSeller, isSellerAuth);
 
 export default router;
