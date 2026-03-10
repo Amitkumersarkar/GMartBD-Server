@@ -3,27 +3,37 @@ import Address from "../models/address.js";
 // Add Address : /api/address/add
 export const addAddress = async (req, res) => {
     try {
-        const { address, userId } = req.body;
-        await Address.create({ ...address, userId })
-        res.json({ success: true, message: "Address added successfully" })
+        const userId = req.userId; // from auth middleware
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        const { address } = req.body;
+
+        const newAddress = await Address.create({
+            ...address,
+            userId,
+        });
+
+        res.json({ success: true, message: "Address added successfully", address: newAddress });
     } catch (error) {
         console.log(error.message);
-        res.json({ success: false, message: error.message });
-
+        res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
 // Get Address: /api/address/get
 export const getAddress = async (req, res) => {
     try {
-        const { userId } = req.body;
-        const addresses = await Address.find({ userId })
-        res.json({ success: true, addresses })
+        const userId = req.userId;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
 
-
+        const addresses = await Address.find({ userId });
+        res.json({ success: true, addresses });
     } catch (error) {
         console.log(error.message);
-        res.json({ success: false, message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
-
-}
+};
