@@ -3,7 +3,7 @@ import Address from "../models/address.js";
 // Add Address : /api/address/add
 export const addAddress = async (req, res) => {
     try {
-        const userId = req.userId; // from auth middleware
+        const userId = req.userId;
         if (!userId) {
             return res.status(401).json({ success: false, message: "Unauthorized" });
         }
