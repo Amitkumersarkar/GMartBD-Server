@@ -1,0 +1,1 @@
+G-MartBD is a full-stack MERN e-commerce platform for online shopping. Users can browse products, manage carts, place orders, and make payments securely. The project features a modern responsive UI with advanced functionality for a complete shopping experience.
