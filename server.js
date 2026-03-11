@@ -17,10 +17,12 @@ const port = process.env.PORT || 3500;
 // cloudinary connect
 await connectCloudinary();
 
-
 // allowed origins
-const allowedOrigins = ["http://localhost:5173"];
-
+// const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+    "https://g-martbd.vercel.app/",
+    "http://localhost:5173"
+];
 // middleware
 app.use(express.json());
 app.use(cookieParser());
