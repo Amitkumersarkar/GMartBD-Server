@@ -18,27 +18,38 @@ const port = process.env.PORT || 3500;
 await connectCloudinary();
 
 // allowed origins
-// const allowedOrigins = ["http://localhost:5173"];
 const allowedOrigins = [
-    "https://g-martbd.vercel.app/",
+    "https://g-martbd.vercel.app",
     "http://localhost:5173"
 ];
+
 // middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(cors({
+    origin: function (origin, callback) {
+        // allow requests with no origin (like Postman)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = "CORS policy does not allow access from this origin.";
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true
+}));
 
 // routes
 app.get("/", (req, res) => {
     res.send("G-Mart server is running...!!");
 });
+
 app.use("/api/user", userRouter);
 app.use("/api/seller", sellerRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/order", orderRouter);
-
 
 // start server after DB connects
 const startServer = async () => {
